@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
         console.log('Auth Middleware - Decoded token:', decoded);
         
         // Add user from payload
-        req.user = decoded.user;
+        req.user = { id: decoded.id };
         next();
     } catch (err) {
         console.error('Auth Middleware - Token verification failed:', err);

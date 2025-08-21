@@ -28,12 +28,12 @@ router.post('/register', async (req, res) => {
 
     // Check if user exists
     const userExists = await pool.query(
-      'SELECT * FROM users WHERE email = $1 OR username = $2',
-      [email, username]
+      'SELECT * FROM users WHERE email = $1',
+      [email]
     );
 
     if (userExists.rows.length > 0) {
-      return res.status(400).json({ message: 'User with this email or username already exists' });
+      return res.status(400).json({ message: 'User with this email already exists' });
     }
 
     // Hash password
@@ -45,7 +45,7 @@ router.post('/register', async (req, res) => {
       `INSERT INTO users (username, email, password, phone, location, created_at)
        VALUES ($1, $2, $3, $4, $5, NOW())
        RETURNING id, username, email`,
-      [username, email, hashedPassword, phone, location]
+      [username, email, hashedPassword, phone || null, location || null]
     );
 
     // Create token
@@ -79,7 +79,7 @@ router.post('/login', async (req, res) => {
 
         // Check if user exists
         const result = await pool.query(
-            'SELECT * FROM users WHERE email = $1',
+            'SELECT id, username, email, password FROM users WHERE email = $1',
             [email]
         );
 
@@ -113,8 +113,7 @@ router.post('/login', async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email,
-                role: user.role
+                email: user.email
             }
         });
 
