@@ -1,10 +1,12 @@
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
+    location VARCHAR(100),
+    full_name VARCHAR(100),
     address TEXT,
     date_of_birth DATE,
     gender VARCHAR(20),
@@ -34,6 +36,16 @@ CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+    
+-- Create login_history table
+CREATE TABLE IF NOT EXISTS login_history (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    login_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) NOT NULL,
+    ip_address VARCHAR(50),
+    device_info TEXT
+);
 
 -- Create motorcycles table with all required columns
 CREATE TABLE IF NOT EXISTS motorcycles (

@@ -10,12 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
+// API Routes
 app.use('/api/users', require('./routes/users'));
+// Auth routes are now in users.js
 app.use('/api/listings', require('./routes/listings'));
 app.use('/api/motorcycles', require('./routes/motorcycles'));
-app.use('/api/admin', require('./routes/admin'));
 
 const PORT = process.env.PORT || 5000;
 

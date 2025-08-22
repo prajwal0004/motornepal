@@ -5,7 +5,18 @@ module.exports = function(req, res, next) {
     console.log('Auth Middleware - Headers:', req.headers);
     
     // Get token from header
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    let token = req.header('Authorization');
+    
+    // Handle different token formats (Bearer token or just token)
+    if (token) {
+        if (token.startsWith('Bearer ')) {
+            token = token.replace('Bearer ', '');
+        }
+    } else {
+        // Try to get token from other common places
+        token = req.header('x-auth-token') || req.query.token || req.cookies?.token;
+    }
+    
     console.log('Auth Middleware - Token:', token);
 
     // Check if no token
